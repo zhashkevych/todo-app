@@ -13,15 +13,14 @@
 - Написание SQL запросов.
 - Graceful Shutdown
 
-### Для запуска БД:
-
-```
-docker pull postgres
-docker run --name=todo-db -e POSTGRES_PASSWORD='qwerty' -p=5432:5432 -d --rm postgres
-```
-
 ### Для запуска приложения:
 
 ```
-go run cmd/main.go
+make build && make run
+```
+
+Если приложение запускается впервые, необходимо применить миграции к базе данных:
+
+```
+make migrate
 ```
