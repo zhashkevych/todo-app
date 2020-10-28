@@ -9,15 +9,14 @@ import (
 	"github.com/zhashkevych/todo-app"
 	"github.com/zhashkevych/todo-app/pkg/service"
 	service_mocks "github.com/zhashkevych/todo-app/pkg/service/mocks"
-	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
-type mockBehavior func(r *service_mocks.MockAuthorization, user todo.User)
-
 func TestHandler_signUp(t *testing.T) {
 	// Init Test Table
+	type mockBehavior func(r *service_mocks.MockAuthorization, user todo.User)
+
 	tests := []struct {
 		name                 string
 		inputBody            string
@@ -82,7 +81,7 @@ func TestHandler_signUp(t *testing.T) {
 
 			// Create Request
 			w := httptest.NewRecorder()
-			req, _ := http.NewRequest("POST", "/sign-up",
+			req:= httptest.NewRequest("POST", "/sign-up",
 				bytes.NewBufferString(test.inputBody))
 
 			// Make Request
