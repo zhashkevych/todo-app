@@ -54,6 +54,15 @@ func TestHandler_userIdentity(t *testing.T) {
 			expectedResponseBody: `{"message":"invalid auth header"}`,
 		},
 		{
+			name:        "Empty Token",
+			headerName:  "Authorization",
+			headerValue: "Bearer ",
+			token:       "token",
+			mockBehavior: func(r *service_mocks.MockAuthorization, token string) {},
+			expectedStatusCode:   401,
+			expectedResponseBody: `{"message":"token is empty"}`,
+		},
+		{
 			name:        "Parse Error",
 			headerName:  "Authorization",
 			headerValue: "Bearer token",
