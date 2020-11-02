@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/stretchr/testify/assert"
 	sqlmock "github.com/zhashkevych/go-sqlxmock"
 	"github.com/zhashkevych/todo-app"
 	"testing"
@@ -57,12 +58,11 @@ func TestAuthPostgres_CreateUser(t *testing.T) {
 			tt.mock()
 
 			got, err := r.CreateUser(tt.input)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
-			}
-
-			if err == nil && got != tt.want {
-				t.Fatalf("Results mismatch; want %d, got %d", tt.want, got)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -122,12 +122,11 @@ func TestAuthPostgres_GetUser(t *testing.T) {
 			tt.mock()
 
 			got, err := r.GetUser(tt.input.username, tt.input.password)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
-			}
-
-			if err == nil && got != tt.want {
-				t.Fatalf("Results mismatch; want %v, got %v", tt.want, got)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}

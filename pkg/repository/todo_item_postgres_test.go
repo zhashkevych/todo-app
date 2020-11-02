@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 	sqlmock "github.com/zhashkevych/go-sqlxmock"
 	"github.com/zhashkevych/todo-app"
-	"reflect"
 	"testing"
 )
 
@@ -176,12 +175,11 @@ func TestTodoItemPostgres_GetAll(t *testing.T) {
 			tt.mock()
 
 			got, err := r.GetAll(tt.input.userId, tt.input.listId)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
-			}
-
-			if err == nil && !reflect.DeepEqual(got, tt.want) {
-				t.Fatalf("Results mismatch; want %v, got %v", tt.want, got)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -243,12 +241,11 @@ func TestTodoItemPostgres_GetById(t *testing.T) {
 			tt.mock()
 
 			got, err := r.GetById(tt.input.userId, tt.input.itemId)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
-			}
-
-			if err == nil && !reflect.DeepEqual(got, tt.want) {
-				t.Fatalf("Results mismatch; want %v, got %v", tt.want, got)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -303,8 +300,10 @@ func TestTodoItemPostgres_Delete(t *testing.T) {
 			tt.mock()
 
 			err := r.Delete(tt.input.userId, tt.input.itemId)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
@@ -394,8 +393,10 @@ func TestTodoItemPostgres_Update(t *testing.T) {
 			tt.mock()
 
 			err := r.Update(tt.input.userId, tt.input.itemId, tt.input.input)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}

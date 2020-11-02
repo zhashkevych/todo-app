@@ -2,9 +2,9 @@ package repository
 
 import (
 	"database/sql"
+	"github.com/stretchr/testify/assert"
 	sqlmock "github.com/zhashkevych/go-sqlxmock"
 	"github.com/zhashkevych/todo-app"
-	"reflect"
 	"testing"
 )
 
@@ -78,12 +78,11 @@ func TestTodoListPostgres_Create(t *testing.T) {
 			tt.mock()
 
 			got, err := r.Create(tt.input.userId, tt.input.item)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
-			}
-
-			if err == nil && got != tt.want {
-				t.Fatalf("Results mismatch; want %d, got %d", tt.want, got)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -155,12 +154,11 @@ func TestTodoListPostgres_GetAll(t *testing.T) {
 			tt.mock()
 
 			got, err := r.GetAll(tt.input.userId)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
-			}
-
-			if err == nil && !reflect.DeepEqual(got, tt.want) {
-				t.Fatalf("Results mismatch; want %v, got %v", tt.want, got)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -222,12 +220,11 @@ func TestTodoListPostgres_GetById(t *testing.T) {
 			tt.mock()
 
 			got, err := r.GetById(tt.input.userId, tt.input.listId)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
-			}
-
-			if err == nil && !reflect.DeepEqual(got, tt.want) {
-				t.Fatalf("Results mismatch; want %v, got %v", tt.want, got)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, got)
 			}
 		})
 	}
@@ -282,8 +279,10 @@ func TestTodoListPostgres_Delete(t *testing.T) {
 			tt.mock()
 
 			err := r.Delete(tt.input.userId, tt.input.listId)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
@@ -334,7 +333,7 @@ func TestTodoListPostgres_Update(t *testing.T) {
 				listId: 1,
 				userId: 1,
 				input: todo.UpdateListInput{
-					Title:       stringPointer("new title"),
+					Title: stringPointer("new title"),
 				},
 			},
 		},
@@ -348,7 +347,7 @@ func TestTodoListPostgres_Update(t *testing.T) {
 				listId: 1,
 				userId: 1,
 				input: todo.UpdateListInput{
-					Description:       stringPointer("new description"),
+					Description: stringPointer("new description"),
 				},
 			},
 		},
@@ -371,8 +370,10 @@ func TestTodoListPostgres_Update(t *testing.T) {
 			tt.mock()
 
 			err := r.Update(tt.input.userId, tt.input.listId, tt.input.input)
-			if err != nil && !tt.wantErr {
-				t.Fatal(err)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
 			}
 		})
 	}
