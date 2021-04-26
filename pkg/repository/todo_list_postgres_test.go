@@ -84,6 +84,7 @@ func TestTodoListPostgres_Create(t *testing.T) {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, got)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -160,6 +161,7 @@ func TestTodoListPostgres_GetAll(t *testing.T) {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, got)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -205,7 +207,7 @@ func TestTodoListPostgres_GetById(t *testing.T) {
 				rows := sqlmock.NewRows([]string{"id", "title", "description"})
 
 				mock.ExpectQuery("SELECT (.+) FROM todo_lists tl INNER JOIN users_lists ul on (.+) WHERE (.+)").
-					WithArgs(1, 1).WillReturnRows(rows)
+					WithArgs(1, 404).WillReturnRows(rows)
 			},
 			input: args{
 				listId: 404,
@@ -226,6 +228,7 @@ func TestTodoListPostgres_GetById(t *testing.T) {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, got)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -284,6 +287,7 @@ func TestTodoListPostgres_Delete(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -354,14 +358,13 @@ func TestTodoListPostgres_Update(t *testing.T) {
 		{
 			name: "OK_NoInputFields",
 			mock: func() {
-				mock.ExpectExec("UPDATE todo_lists tl SET (.+) FROM users_lists ul WHERE (.+)").
+				mock.ExpectExec("UPDATE todo_lists tl SET FROM users_lists ul WHERE (.+)").
 					WithArgs(1, 1).WillReturnResult(sqlmock.NewResult(0, 1))
 			},
 			input: args{
 				listId: 1,
 				userId: 1,
 			},
-			wantErr: true,
 		},
 	}
 
@@ -375,6 +378,7 @@ func TestTodoListPostgres_Update(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }

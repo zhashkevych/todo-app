@@ -64,6 +64,7 @@ func TestAuthPostgres_CreateUser(t *testing.T) {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, got)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -128,6 +129,7 @@ func TestAuthPostgres_GetUser(t *testing.T) {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, got)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
