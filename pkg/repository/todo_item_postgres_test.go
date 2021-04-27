@@ -110,6 +110,7 @@ func TestTodoItemPostgres_Create(t *testing.T) {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, got)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -181,6 +182,7 @@ func TestTodoItemPostgres_GetAll(t *testing.T) {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, got)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -226,7 +228,7 @@ func TestTodoItemPostgres_GetById(t *testing.T) {
 				rows := sqlmock.NewRows([]string{"id", "title", "description", "done"})
 
 				mock.ExpectQuery("SELECT (.+) FROM todo_items ti INNER JOIN lists_items li on (.+) INNER JOIN users_lists ul on (.+) WHERE (.+)").
-					WithArgs(1, 1).WillReturnRows(rows)
+					WithArgs(404, 1).WillReturnRows(rows)
 			},
 			input: args{
 				itemId: 404,
@@ -247,6 +249,7 @@ func TestTodoItemPostgres_GetById(t *testing.T) {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, got)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -305,6 +308,7 @@ func TestTodoItemPostgres_Delete(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -377,14 +381,13 @@ func TestTodoItemPostgres_Update(t *testing.T) {
 		{
 			name: "OK_NoInputFields",
 			mock: func() {
-				mock.ExpectExec("UPDATE todo_items ti SET (.+) FROM lists_items li, users_lists ul WHERE (.+)").
+				mock.ExpectExec("UPDATE todo_items ti SET FROM lists_items li, users_lists ul WHERE (.+)").
 					WithArgs(1, 1).WillReturnResult(sqlmock.NewResult(0, 1))
 			},
 			input: args{
 				itemId: 1,
 				userId: 1,
 			},
-			wantErr: true,
 		},
 	}
 
@@ -398,6 +401,7 @@ func TestTodoItemPostgres_Update(t *testing.T) {
 			} else {
 				assert.NoError(t, err)
 			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
