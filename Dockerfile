@@ -1,19 +1,21 @@
-FROM golang:1.14-buster
+FROM golang:1.14-buster AS build
 
-RUN go version
 ENV GOPATH=/
-
-COPY ./ ./
-
-# install psql
-RUN apt-get update
-RUN apt-get -y install postgresql-client
-
-# make wait-for-postgres.sh executable
-RUN chmod +x wait-for-postgres.sh
+WORKDIR /src/
+COPY ./ /src/
 
 # build go app
-RUN go mod download
-RUN go build -o todo-app ./cmd/main.go
+RUN go mod download; CGO_ENABLED=0 go build -o /todo-app ./cmd/main.go
 
-CMD ["./todo-app"]
+
+FROM alpine:latest
+
+# copy go app, config and wait-for-postgres.sh
+COPY --from=build /todo-app /todo-app
+COPY ./configs/ /configs/
+COPY ./wait-for-postgres.sh ./
+
+# install psql and make wait-for-postgres.sh executable
+RUN apk --no-cache add postgresql-client && chmod +x wait-for-postgres.sh
+
+CMD ["/todo-app"]
