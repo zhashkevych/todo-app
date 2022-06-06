@@ -1,0 +1,14 @@
+port: ":8000"
+
+db:
+  username: "postgres"
+  password: "qwerty"
+  host: "db"
+  port: "5432"
+  dbname: "postgres"
+  sslmode: "disable"
+
+redis:
+  addr: "redis:6379"
+  password: ""
+  db: "0"

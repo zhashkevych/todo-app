@@ -1,26 +1,13 @@
-# REST API Для Создания TODO Списков на Go
+# Добавление в todo-app функции кэширования в Redis
 
-## <a href="https://www.youtube.com/playlist?list=PLbTTxxr-hMmyFAvyn7DeOgNRN8BQdjFm8">Видеокурс на YouTube</a>
+## Информация по реализации Redis
+При GET запросах данные кэшируются в хэш-таблицу Redis.
 
-## В курсе разобранны следующие концепции:
-- Разработка Веб-Приложений на Go, следуя дизайну REST API.
-- Работа с фреймворком <a href="https://github.com/gin-gonic/gin">gin-gonic/gin</a>.
-- Подход Чистой Архитектуры в построении структуры приложения. Техника внедрения зависимости.
-- Работа с БД Postgres. Запуск из Docker. Генерация файлов миграций. 
-- Конфигурация приложения с помощью библиотеки <a href="https://github.com/spf13/viper">spf13/viper</a>. Работа с переменными окружения.
-- Работа с БД, используя библиотеку <a href="https://github.com/jmoiron/sqlx">sqlx</a>.
-- Регистрация и аутентификация. Работа с JWT. Middleware.
-- Написание SQL запросов.
-- Graceful Shutdown
+Структура хэш-таблицы:
 
-### Для запуска приложения:
+    - HKEYS: user:'userId' - ключи таблицы;
+    - FIELD: lists (getAllLists), list:'id' (getListById), items:'listId' (getAllItems), item:'id' (getItemById) - поля ключей user:'userId' хэш-таблицы.
+В скобках рядом с полями указаны handler функции GET, которST кэшируют данные в это поле.
 
-```
-make build && make run
-```
-
-Если приложение запускается впервые, необходимо применить миграции к базе данных:
-
-```
-make migrate
-```
+Handler функция createList удаляет из хэш-таблицы поле lists.
+Handler функции updateList, deleteList, updateItem, deleteItem удаляют из хэш-таблицы весь ключ user:'userId'.
