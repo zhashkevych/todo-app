@@ -1,14 +1,17 @@
+// Подключение к БД
+
 package repository
 
 import (
 	"fmt"
+
 	"github.com/jmoiron/sqlx"
 )
 
 const (
 	usersTable      = "users"
 	todoListsTable  = "todo_lists"
-	usersListsTable = "users_lists"
+	usersListsTable = "user_lists"
 	todoItemsTable  = "todo_items"
 	listsItemsTable = "lists_items"
 )
@@ -34,5 +37,5 @@ func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
 		return nil, err
 	}
 
-	return db, nil
+	return db, err
 }

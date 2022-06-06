@@ -4,25 +4,25 @@ import (
 	"crypto/sha1"
 	"errors"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/zhashkevych/todo-app"
-	"github.com/zhashkevych/todo-app/pkg/repository"
 	"time"
+	"todo-app"
+	"todo-app/pkg/repository"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
-const (
-	salt       = "hjqrhjqw124617ajfhajs"
-	signingKey = "qrkjk#4#%35FSFJlja#4353KSFjH"
-	tokenTTL   = 12 * time.Hour
-)
+const tokenTTL = 30 * time.Hour
+
+const JWT_SECRET = "rkjk#4#%35FSFJlja#4353KSFjH"
+const SOLT = "hjqrhjqw124617ajfhajs"
+
+type AuthService struct {
+	repo repository.Authorization
+}
 
 type tokenClaims struct {
 	jwt.StandardClaims
 	UserId int `json:"user_id"`
-}
-
-type AuthService struct {
-	repo repository.Authorization
 }
 
 func NewAuthService(repo repository.Authorization) *AuthService {
@@ -30,34 +30,33 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 }
 
 func (s *AuthService) CreateUser(user todo.User) (int, error) {
-	user.Password = generatePasswordHash(user.Password)
+	user.Password = generatePasswordHash(user.Password) // Перезаписываем пароль на хэшированный
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) GenerateToken(username, password string) (string, error) {
-	user, err := s.repo.GetUser(username, generatePasswordHash(password))
+func (s *AuthService) GenerateToken(username, password string) (string, error) { // Генерация токена по имени и паролю
+	user, err := s.repo.GetUser(username, generatePasswordHash(password)) // поиск пользователя в БД
 	if err != nil {
 		return "", err
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{ // генерация токена
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
-			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(tokenTTL).Unix(), // время действия токена
+			IssuedAt:  time.Now().Unix(),               //время создания
 		},
 		user.Id,
 	})
 
-	return token.SignedString([]byte(signingKey))
+	return token.SignedString([]byte(JWT_SECRET))
 }
 
-func (s *AuthService) ParseToken(accessToken string) (int, error) {
-	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+func (s *AuthService) ParseToken(accesstoken string) (int, error) { //Парс токена (получаем из токена id)
+	token, err := jwt.ParseWithClaims(accesstoken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
-
-		return []byte(signingKey), nil
+		return []byte(JWT_SECRET), nil
 	})
 	if err != nil {
 		return 0, err
@@ -71,9 +70,9 @@ func (s *AuthService) ParseToken(accessToken string) (int, error) {
 	return claims.UserId, nil
 }
 
-func generatePasswordHash(password string) string {
+func generatePasswordHash(password string) string { // Хэширование пароля
 	hash := sha1.New()
 	hash.Write([]byte(password))
 
-	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
+	return fmt.Sprintf("%x", hash.Sum([]byte(SOLT)))
 }

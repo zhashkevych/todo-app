@@ -1,22 +1,39 @@
 version: '3.8'
 
 services:
-  todo-app:
-    build: ./
-    command: ./wait-for-postgres.sh db ./todo-app
-    ports:
-      - 8000:8000
+  api:
     depends_on:
       - db
+      - redis
+    build:
+      context: .
+      dockerfile: Dockerfile.multi
+    container_name: apidb
+    ports:
+      - 8000:8000
     environment:
       - DB_PASSWORD=qwerty
-
+    deploy:
+      restart_policy:
+        condition: on-failure
+    
   db:
-    restart: always
     image: postgres:latest
-    volumes:
-    - ./.database/postgres/data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=qwerty
+    restart: always
+    container_name: db
     ports:
-      - 5436:5432
+      - 5432:5432
+    volumes:
+      - todo:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-qwerty}
+
+  redis:
+    image: redis:latest
+    restart: always
+    container_name: redis
+    ports:
+      - 6379:6379
+
+volumes:
+  todo:

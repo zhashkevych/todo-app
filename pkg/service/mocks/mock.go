@@ -5,35 +5,36 @@
 package mock_service
 
 import (
-	gomock "github.com/golang/mock/gomock"
-	todo "github.com/zhashkevych/todo-app"
 	reflect "reflect"
+	todo "todo-app"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
-// MockAuthorization is a mock of Authorization interface
+// MockAuthorization is a mock of Authorization interface.
 type MockAuthorization struct {
 	ctrl     *gomock.Controller
 	recorder *MockAuthorizationMockRecorder
 }
 
-// MockAuthorizationMockRecorder is the mock recorder for MockAuthorization
+// MockAuthorizationMockRecorder is the mock recorder for MockAuthorization.
 type MockAuthorizationMockRecorder struct {
 	mock *MockAuthorization
 }
 
-// NewMockAuthorization creates a new mock instance
+// NewMockAuthorization creates a new mock instance.
 func NewMockAuthorization(ctrl *gomock.Controller) *MockAuthorization {
 	mock := &MockAuthorization{ctrl: ctrl}
 	mock.recorder = &MockAuthorizationMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockAuthorization) EXPECT() *MockAuthorizationMockRecorder {
 	return m.recorder
 }
 
-// CreateUser mocks base method
+// CreateUser mocks base method.
 func (m *MockAuthorization) CreateUser(user todo.User) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", user)
@@ -42,13 +43,13 @@ func (m *MockAuthorization) CreateUser(user todo.User) (int, error) {
 	return ret0, ret1
 }
 
-// CreateUser indicates an expected call of CreateUser
+// CreateUser indicates an expected call of CreateUser.
 func (mr *MockAuthorizationMockRecorder) CreateUser(user interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockAuthorization)(nil).CreateUser), user)
 }
 
-// GenerateToken mocks base method
+// GenerateToken mocks base method.
 func (m *MockAuthorization) GenerateToken(username, password string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GenerateToken", username, password)
@@ -57,13 +58,13 @@ func (m *MockAuthorization) GenerateToken(username, password string) (string, er
 	return ret0, ret1
 }
 
-// GenerateToken indicates an expected call of GenerateToken
+// GenerateToken indicates an expected call of GenerateToken.
 func (mr *MockAuthorizationMockRecorder) GenerateToken(username, password interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateToken", reflect.TypeOf((*MockAuthorization)(nil).GenerateToken), username, password)
 }
 
-// ParseToken mocks base method
+// ParseToken mocks base method.
 func (m *MockAuthorization) ParseToken(token string) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ParseToken", token)
@@ -72,36 +73,36 @@ func (m *MockAuthorization) ParseToken(token string) (int, error) {
 	return ret0, ret1
 }
 
-// ParseToken indicates an expected call of ParseToken
+// ParseToken indicates an expected call of ParseToken.
 func (mr *MockAuthorizationMockRecorder) ParseToken(token interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseToken", reflect.TypeOf((*MockAuthorization)(nil).ParseToken), token)
 }
 
-// MockTodoList is a mock of TodoList interface
+// MockTodoList is a mock of TodoList interface.
 type MockTodoList struct {
 	ctrl     *gomock.Controller
 	recorder *MockTodoListMockRecorder
 }
 
-// MockTodoListMockRecorder is the mock recorder for MockTodoList
+// MockTodoListMockRecorder is the mock recorder for MockTodoList.
 type MockTodoListMockRecorder struct {
 	mock *MockTodoList
 }
 
-// NewMockTodoList creates a new mock instance
+// NewMockTodoList creates a new mock instance.
 func NewMockTodoList(ctrl *gomock.Controller) *MockTodoList {
 	mock := &MockTodoList{ctrl: ctrl}
 	mock.recorder = &MockTodoListMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockTodoList) EXPECT() *MockTodoListMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method
+// Create mocks base method.
 func (m *MockTodoList) Create(userId int, list todo.TodoList) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", userId, list)
@@ -110,13 +111,27 @@ func (m *MockTodoList) Create(userId int, list todo.TodoList) (int, error) {
 	return ret0, ret1
 }
 
-// Create indicates an expected call of Create
+// Create indicates an expected call of Create.
 func (mr *MockTodoListMockRecorder) Create(userId, list interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockTodoList)(nil).Create), userId, list)
 }
 
-// GetAll mocks base method
+// DeleteById mocks base method.
+func (m *MockTodoList) DeleteById(userId, listId int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteById", userId, listId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteById indicates an expected call of DeleteById.
+func (mr *MockTodoListMockRecorder) DeleteById(userId, listId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteById", reflect.TypeOf((*MockTodoList)(nil).DeleteById), userId, listId)
+}
+
+// GetAll mocks base method.
 func (m *MockTodoList) GetAll(userId int) ([]todo.TodoList, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", userId)
@@ -125,13 +140,13 @@ func (m *MockTodoList) GetAll(userId int) ([]todo.TodoList, error) {
 	return ret0, ret1
 }
 
-// GetAll indicates an expected call of GetAll
+// GetAll indicates an expected call of GetAll.
 func (mr *MockTodoListMockRecorder) GetAll(userId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockTodoList)(nil).GetAll), userId)
 }
 
-// GetById mocks base method
+// GetById mocks base method.
 func (m *MockTodoList) GetById(userId, listId int) (todo.TodoList, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetById", userId, listId)
@@ -140,64 +155,51 @@ func (m *MockTodoList) GetById(userId, listId int) (todo.TodoList, error) {
 	return ret0, ret1
 }
 
-// GetById indicates an expected call of GetById
+// GetById indicates an expected call of GetById.
 func (mr *MockTodoListMockRecorder) GetById(userId, listId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockTodoList)(nil).GetById), userId, listId)
 }
 
-// Delete mocks base method
-func (m *MockTodoList) Delete(userId, listId int) error {
+// UpdateById mocks base method.
+func (m *MockTodoList) UpdateById(userId, listId int, list todo.UpdateListInput) (todo.TodoList, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", userId, listId)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "UpdateById", userId, listId, list)
+	ret0, _ := ret[0].(todo.TodoList)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
-// Delete indicates an expected call of Delete
-func (mr *MockTodoListMockRecorder) Delete(userId, listId interface{}) *gomock.Call {
+// UpdateById indicates an expected call of UpdateById.
+func (mr *MockTodoListMockRecorder) UpdateById(userId, listId, list interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTodoList)(nil).Delete), userId, listId)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateById", reflect.TypeOf((*MockTodoList)(nil).UpdateById), userId, listId, list)
 }
 
-// Update mocks base method
-func (m *MockTodoList) Update(userId, listId int, input todo.UpdateListInput) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", userId, listId, input)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Update indicates an expected call of Update
-func (mr *MockTodoListMockRecorder) Update(userId, listId, input interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTodoList)(nil).Update), userId, listId, input)
-}
-
-// MockTodoItem is a mock of TodoItem interface
+// MockTodoItem is a mock of TodoItem interface.
 type MockTodoItem struct {
 	ctrl     *gomock.Controller
 	recorder *MockTodoItemMockRecorder
 }
 
-// MockTodoItemMockRecorder is the mock recorder for MockTodoItem
+// MockTodoItemMockRecorder is the mock recorder for MockTodoItem.
 type MockTodoItemMockRecorder struct {
 	mock *MockTodoItem
 }
 
-// NewMockTodoItem creates a new mock instance
+// NewMockTodoItem creates a new mock instance.
 func NewMockTodoItem(ctrl *gomock.Controller) *MockTodoItem {
 	mock := &MockTodoItem{ctrl: ctrl}
 	mock.recorder = &MockTodoItemMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockTodoItem) EXPECT() *MockTodoItemMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method
+// Create mocks base method.
 func (m *MockTodoItem) Create(userId, listId int, item todo.TodoItem) (int, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", userId, listId, item)
@@ -206,13 +208,27 @@ func (m *MockTodoItem) Create(userId, listId int, item todo.TodoItem) (int, erro
 	return ret0, ret1
 }
 
-// Create indicates an expected call of Create
+// Create indicates an expected call of Create.
 func (mr *MockTodoItemMockRecorder) Create(userId, listId, item interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockTodoItem)(nil).Create), userId, listId, item)
 }
 
-// GetAll mocks base method
+// Delete mocks base method.
+func (m *MockTodoItem) Delete(userId, itemId int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", userId, itemId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockTodoItemMockRecorder) Delete(userId, itemId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTodoItem)(nil).Delete), userId, itemId)
+}
+
+// GetAll mocks base method.
 func (m *MockTodoItem) GetAll(userId, listId int) ([]todo.TodoItem, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAll", userId, listId)
@@ -221,13 +237,13 @@ func (m *MockTodoItem) GetAll(userId, listId int) ([]todo.TodoItem, error) {
 	return ret0, ret1
 }
 
-// GetAll indicates an expected call of GetAll
+// GetAll indicates an expected call of GetAll.
 func (mr *MockTodoItemMockRecorder) GetAll(userId, listId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAll", reflect.TypeOf((*MockTodoItem)(nil).GetAll), userId, listId)
 }
 
-// GetById mocks base method
+// GetById mocks base method.
 func (m *MockTodoItem) GetById(userId, itemId int) (todo.TodoItem, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetById", userId, itemId)
@@ -236,27 +252,13 @@ func (m *MockTodoItem) GetById(userId, itemId int) (todo.TodoItem, error) {
 	return ret0, ret1
 }
 
-// GetById indicates an expected call of GetById
+// GetById indicates an expected call of GetById.
 func (mr *MockTodoItemMockRecorder) GetById(userId, itemId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetById", reflect.TypeOf((*MockTodoItem)(nil).GetById), userId, itemId)
 }
 
-// Delete mocks base method
-func (m *MockTodoItem) Delete(userId, itemId int) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Delete", userId, itemId)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// Delete indicates an expected call of Delete
-func (mr *MockTodoItemMockRecorder) Delete(userId, itemId interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTodoItem)(nil).Delete), userId, itemId)
-}
-
-// Update mocks base method
+// Update mocks base method.
 func (m *MockTodoItem) Update(userId, itemId int, input todo.UpdateItemInput) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", userId, itemId, input)
@@ -264,8 +266,168 @@ func (m *MockTodoItem) Update(userId, itemId int, input todo.UpdateItemInput) er
 	return ret0
 }
 
-// Update indicates an expected call of Update
+// Update indicates an expected call of Update.
 func (mr *MockTodoItemMockRecorder) Update(userId, itemId, input interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTodoItem)(nil).Update), userId, itemId, input)
+}
+
+// MockTodoListCach is a mock of TodoListCach interface.
+type MockTodoListCach struct {
+	ctrl     *gomock.Controller
+	recorder *MockTodoListCachMockRecorder
+}
+
+// MockTodoListCachMockRecorder is the mock recorder for MockTodoListCach.
+type MockTodoListCachMockRecorder struct {
+	mock *MockTodoListCach
+}
+
+// NewMockTodoListCach creates a new mock instance.
+func NewMockTodoListCach(ctrl *gomock.Controller) *MockTodoListCach {
+	mock := &MockTodoListCach{ctrl: ctrl}
+	mock.recorder = &MockTodoListCachMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockTodoListCach) EXPECT() *MockTodoListCachMockRecorder {
+	return m.recorder
+}
+
+// Delete mocks base method.
+func (m *MockTodoListCach) Delete(userId int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", userId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockTodoListCachMockRecorder) Delete(userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTodoListCach)(nil).Delete), userId)
+}
+
+// HDelete mocks base method.
+func (m *MockTodoListCach) HDelete(userId int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HDelete", userId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// HDelete indicates an expected call of HDelete.
+func (mr *MockTodoListCachMockRecorder) HDelete(userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HDelete", reflect.TypeOf((*MockTodoListCach)(nil).HDelete), userId)
+}
+
+// HGet mocks base method.
+func (m *MockTodoListCach) HGet(userId, listId int) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HGet", userId, listId)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// HGet indicates an expected call of HGet.
+func (mr *MockTodoListCachMockRecorder) HGet(userId, listId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HGet", reflect.TypeOf((*MockTodoListCach)(nil).HGet), userId, listId)
+}
+
+// HSet mocks base method.
+func (m *MockTodoListCach) HSet(userId, listId int, data string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HSet", userId, listId, data)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// HSet indicates an expected call of HSet.
+func (mr *MockTodoListCachMockRecorder) HSet(userId, listId, data interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HSet", reflect.TypeOf((*MockTodoListCach)(nil).HSet), userId, listId, data)
+}
+
+// MockTodoItemCach is a mock of TodoItemCach interface.
+type MockTodoItemCach struct {
+	ctrl     *gomock.Controller
+	recorder *MockTodoItemCachMockRecorder
+}
+
+// MockTodoItemCachMockRecorder is the mock recorder for MockTodoItemCach.
+type MockTodoItemCachMockRecorder struct {
+	mock *MockTodoItemCach
+}
+
+// NewMockTodoItemCach creates a new mock instance.
+func NewMockTodoItemCach(ctrl *gomock.Controller) *MockTodoItemCach {
+	mock := &MockTodoItemCach{ctrl: ctrl}
+	mock.recorder = &MockTodoItemCachMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockTodoItemCach) EXPECT() *MockTodoItemCachMockRecorder {
+	return m.recorder
+}
+
+// Delete mocks base method.
+func (m *MockTodoItemCach) Delete(userId int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", userId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockTodoItemCachMockRecorder) Delete(userId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTodoItemCach)(nil).Delete), userId)
+}
+
+// HDelete mocks base method.
+func (m *MockTodoItemCach) HDelete(userId, listId int) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HDelete", userId, listId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// HDelete indicates an expected call of HDelete.
+func (mr *MockTodoItemCachMockRecorder) HDelete(userId, listId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HDelete", reflect.TypeOf((*MockTodoItemCach)(nil).HDelete), userId, listId)
+}
+
+// HGet mocks base method.
+func (m *MockTodoItemCach) HGet(userId, listId, itemId int) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HGet", userId, listId, itemId)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// HGet indicates an expected call of HGet.
+func (mr *MockTodoItemCachMockRecorder) HGet(userId, listId, itemId interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HGet", reflect.TypeOf((*MockTodoItemCach)(nil).HGet), userId, listId, itemId)
+}
+
+// HSet mocks base method.
+func (m *MockTodoItemCach) HSet(userId, listId, itemId int, data string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "HSet", userId, listId, itemId, data)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// HSet indicates an expected call of HSet.
+func (mr *MockTodoItemCachMockRecorder) HSet(userId, listId, itemId, data interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HSet", reflect.TypeOf((*MockTodoItemCach)(nil).HSet), userId, listId, itemId, data)
 }

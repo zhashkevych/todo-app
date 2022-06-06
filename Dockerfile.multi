@@ -1,6 +1,8 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.18
+## Build
+
+FROM golang:1.18 AS build
 
 WORKDIR /todo-app
 
@@ -13,8 +15,14 @@ COPY ./ ./
 
 RUN go build -o ./bin/main cmd/*.go
 
+## Deploy
+
+FROM gcr.io/distroless/base-debian11
+
+WORKDIR /
+
+COPY --from=build /todo-app/ ./
+
 EXPOSE 8000
 
 CMD ["./bin/main"]
-
-#migrate -path ./schema -database 'postgres://postgres:qwerty@localhost:5432/postgres?sslmode=disable' up

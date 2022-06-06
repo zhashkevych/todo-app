@@ -1,18 +1,20 @@
 package repository
 
 import (
-	"database/sql"
 	"errors"
+	"log"
+	"testing"
+	"todo-app"
+
 	"github.com/stretchr/testify/assert"
 	sqlmock "github.com/zhashkevych/go-sqlxmock"
-	"github.com/zhashkevych/todo-app"
-	"testing"
 )
 
 func TestTodoItemPostgres_Create(t *testing.T) {
-	db, mock, err := sqlmock.Newx()
+	// Создаем зависимости
+	db, mock, err := sqlmock.Newx() // mock объекта БД
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		log.Fatal(err)
 	}
 	defer db.Close()
 
@@ -24,25 +26,25 @@ func TestTodoItemPostgres_Create(t *testing.T) {
 	}
 	type mockBehavior func(args args, id int)
 
-	tests := []struct {
-		name    string
-		mock    mockBehavior
-		input   args
-		want    int
-		wantErr bool
+	testTable := []struct {
+		name         string
+		mockBehavior mockBehavior
+		args         args
+		id           int
+		wantErr      bool // флаг ожидания ошибки
 	}{
 		{
-			name: "Ok",
-			input: args{
+			name: "OK",
+			args: args{
 				listId: 1,
 				item: todo.TodoItem{
 					Title:       "test title",
 					Description: "test description",
 				},
 			},
-			want: 2,
-			mock: func(args args, id int) {
-				mock.ExpectBegin()
+			id: 2,
+			mockBehavior: func(args args, id int) {
+				mock.ExpectBegin() // Откроем транзакцию
 
 				rows := sqlmock.NewRows([]string{"id"}).AddRow(id)
 				mock.ExpectQuery("INSERT INTO todo_items").
@@ -55,18 +57,18 @@ func TestTodoItemPostgres_Create(t *testing.T) {
 			},
 		},
 		{
-			name: "Empty Fields",
-			input: args{
+			name: "Empty Field",
+			args: args{
 				listId: 1,
 				item: todo.TodoItem{
 					Title:       "",
-					Description: "description",
+					Description: "test description",
 				},
 			},
-			mock: func(args args, id int) {
-				mock.ExpectBegin()
+			mockBehavior: func(args args, id int) {
+				mock.ExpectBegin() // Откроем транзакцию
 
-				rows := sqlmock.NewRows([]string{"id"}).AddRow(id).RowError(0, errors.New("insert error"))
+				rows := sqlmock.NewRows([]string{"id"}).AddRow(id).RowError(1, errors.New("some error"))
 				mock.ExpectQuery("INSERT INTO todo_items").
 					WithArgs(args.item.Title, args.item.Description).WillReturnRows(rows)
 
@@ -75,23 +77,24 @@ func TestTodoItemPostgres_Create(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "Failed 2nd Insert",
-			input: args{
+			name: "2nd Insert Error",
+			args: args{
 				listId: 1,
 				item: todo.TodoItem{
-					Title:       "title",
-					Description: "description",
+					Title:       "test title",
+					Description: "test description",
 				},
 			},
-			mock: func(args args, id int) {
-				mock.ExpectBegin()
+			id: 2,
+			mockBehavior: func(args args, id int) {
+				mock.ExpectBegin() // Откроем транзакцию
 
 				rows := sqlmock.NewRows([]string{"id"}).AddRow(id)
 				mock.ExpectQuery("INSERT INTO todo_items").
 					WithArgs(args.item.Title, args.item.Description).WillReturnRows(rows)
 
 				mock.ExpectExec("INSERT INTO lists_items").WithArgs(args.listId, id).
-					WillReturnError(errors.New("insert error"))
+					WillReturnError(errors.New("some error"))
 
 				mock.ExpectRollback()
 			},
@@ -99,23 +102,23 @@ func TestTodoItemPostgres_Create(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.mock(tt.input, tt.want)
+	for _, testCase := range testTable {
+		t.Run(testCase.name, func(t *testing.T) {
+			testCase.mockBehavior(testCase.args, testCase.id)
 
-			got, err := r.Create(tt.input.listId, tt.input.item)
-			if tt.wantErr {
+			got, err := r.Create(testCase.args.listId, testCase.args.item)
+			if testCase.wantErr {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
-				assert.Equal(t, tt.want, got)
+				assert.Equal(t, testCase.id, got)
 			}
 			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
 
-func TestTodoItemPostgres_GetAll(t *testing.T) {
+/*func TestTodoItemPostgres_GetAll(t *testing.T) {
 	db, mock, err := sqlmock.Newx()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -135,7 +138,7 @@ func TestTodoItemPostgres_GetAll(t *testing.T) {
 		want    []todo.TodoItem
 		wantErr bool
 	}{
-		{
+		/*{
 			name: "Ok",
 			mock: func() {
 				rows := sqlmock.NewRows([]string{"id", "title", "description", "done"}).
@@ -151,9 +154,9 @@ func TestTodoItemPostgres_GetAll(t *testing.T) {
 				userId: 1,
 			},
 			want: []todo.TodoItem{
-				{1, "title1", "description1", true},
-				{2, "title2", "description2", false},
-				{3, "title3", "description3", false},
+				{Id: 1, Title: "title1", Description: "description1", Done: true},
+				{Id: 2, Title: "title2", Description: "description2", Done: false},
+				{Id: 3, Title: "title3", Description: "description3", Done: false},
 			},
 		},
 		{
@@ -252,9 +255,9 @@ func TestTodoItemPostgres_GetById(t *testing.T) {
 			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
-}
+}*/
 
-func TestTodoItemPostgres_Delete(t *testing.T) {
+/*func TestTodoItemPostgres_Delete(t *testing.T) {
 	db, mock, err := sqlmock.Newx()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -267,7 +270,7 @@ func TestTodoItemPostgres_Delete(t *testing.T) {
 		itemId int
 		userId int
 	}
-	tests := []struct {
+	testTable := []struct {
 		name    string
 		mock    func()
 		input   args
@@ -298,7 +301,7 @@ func TestTodoItemPostgres_Delete(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tt := range testTable {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.mock()
 
@@ -311,9 +314,9 @@ func TestTodoItemPostgres_Delete(t *testing.T) {
 			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
-}
+}*/
 
-func TestTodoItemPostgres_Update(t *testing.T) {
+/*func TestTodoItemPostgres_Update(t *testing.T) {
 	db, mock, err := sqlmock.Newx()
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
@@ -412,4 +415,4 @@ func stringPointer(s string) *string {
 
 func boolPointer(b bool) *bool {
 	return &b
-}
+}*/

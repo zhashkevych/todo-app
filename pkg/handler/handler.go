@@ -1,13 +1,13 @@
 package handler
 
 import (
+	"todo-app/pkg/service"
+
+	_ "todo-app/docs"
+
 	"github.com/gin-gonic/gin"
-	"github.com/zhashkevych/todo-app/pkg/service"
-
-	"github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
-
-	_ "github.com/zhashkevych/todo-app/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 )
 
 type Handler struct {
@@ -15,21 +15,26 @@ type Handler struct {
 }
 
 func NewHandler(services *service.Service) *Handler {
-	return &Handler{services: services}
+	return &Handler{
+		services: services,
+	}
 }
 
-func (h *Handler) InitRoutes() *gin.Engine {
-	router := gin.New()
+func (h *Handler) InitRoutes() *gin.Engine { // Инициализация групп функций мультиплексора
 
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	//gin.SetMode(gin.ReleaseMode) // Переключение сервера в режим Релиза из режима Отладка
 
-	auth := router.Group("/auth")
+	mux := gin.New()
+
+	mux.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler)) // Для работы сваггера
+
+	auth := mux.Group("/auth") // Группа аутентификации
 	{
 		auth.POST("/sign-up", h.signUp)
 		auth.POST("/sign-in", h.signIn)
 	}
 
-	api := router.Group("/api", h.userIdentity)
+	api := mux.Group("/api", h.userIdentity) //Группа для взаимодействия с List
 	{
 		lists := api.Group("/lists")
 		{
@@ -53,6 +58,5 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			items.DELETE("/:id", h.deleteItem)
 		}
 	}
-
-	return router
+	return mux
 }

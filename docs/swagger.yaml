@@ -5,7 +5,7 @@ definitions:
       message:
         type: string
     type: object
-  handler.getAllListsResponse:
+  handler.getAllListsResponce:
     properties:
       data:
         items:
@@ -65,13 +65,13 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/handler.getAllListsResponse'
+            $ref: '#/definitions/handler.getAllListsResponce'
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "404":
-          description: Bad Request
+          description: Not Found
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "500":
@@ -90,10 +90,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: create todo list
+      description: create todo List
       operationId: create-list
       parameters:
-      - description: list info
+      - description: List info
         in: body
         name: input
         required: true
@@ -111,7 +111,7 @@ paths:
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "404":
-          description: Bad Request
+          description: Not Found
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "500":
@@ -124,7 +124,46 @@ paths:
             $ref: '#/definitions/handler.errorResponse'
       security:
       - ApiKeyAuth: []
-      summary: Create todo list
+      summary: Create todo List
+      tags:
+      - lists
+  /api/lists/{id}:
+    delete:
+      consumes:
+      - application/json
+      operationId: delete-list
+      parameters:
+      - description: List Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/handler.errorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete todo List
       tags:
       - lists
   /auth/sign-in:
@@ -152,7 +191,7 @@ paths:
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "404":
-          description: Bad Request
+          description: Not Found
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "500":
@@ -163,7 +202,7 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/handler.errorResponse'
-      summary: SignIn
+      summary: SighIp
       tags:
       - auth
   /auth/sign-up:
@@ -191,7 +230,7 @@ paths:
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "404":
-          description: Bad Request
+          description: Not Found
           schema:
             $ref: '#/definitions/handler.errorResponse'
         "500":
@@ -202,7 +241,7 @@ paths:
           description: ""
           schema:
             $ref: '#/definitions/handler.errorResponse'
-      summary: SignUp
+      summary: SighUp
       tags:
       - auth
 securityDefinitions:

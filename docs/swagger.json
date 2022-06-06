@@ -32,7 +32,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/handler.getAllListsResponse"
+                            "$ref": "#/definitions/handler.getAllListsResponce"
                         }
                     },
                     "400": {
@@ -42,7 +42,7 @@
                         }
                     },
                     "404": {
-                        "description": "Bad Request",
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/handler.errorResponse"
                         }
@@ -67,7 +67,7 @@
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "create todo list",
+                "description": "create todo List",
                 "consumes": [
                     "application/json"
                 ],
@@ -77,11 +77,11 @@
                 "tags": [
                     "lists"
                 ],
-                "summary": "Create todo list",
+                "summary": "Create todo List",
                 "operationId": "create-list",
                 "parameters": [
                     {
-                        "description": "list info",
+                        "description": "List info",
                         "name": "input",
                         "in": "body",
                         "required": true,
@@ -104,7 +104,68 @@
                         }
                     },
                     "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/lists/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "lists"
+                ],
+                "summary": "Delete todo List",
+                "operationId": "delete-list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "List Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.errorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/handler.errorResponse"
                         }
@@ -136,7 +197,7 @@
                 "tags": [
                     "auth"
                 ],
-                "summary": "SignIn",
+                "summary": "SighIp",
                 "operationId": "login",
                 "parameters": [
                     {
@@ -163,7 +224,7 @@
                         }
                     },
                     "404": {
-                        "description": "Bad Request",
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/handler.errorResponse"
                         }
@@ -195,7 +256,7 @@
                 "tags": [
                     "auth"
                 ],
-                "summary": "SignUp",
+                "summary": "SighUp",
                 "operationId": "create-account",
                 "parameters": [
                     {
@@ -222,7 +283,7 @@
                         }
                     },
                     "404": {
-                        "description": "Bad Request",
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/handler.errorResponse"
                         }
@@ -252,7 +313,7 @@
                 }
             }
         },
-        "handler.getAllListsResponse": {
+        "handler.getAllListsResponce": {
             "type": "object",
             "properties": {
                 "data": {
