@@ -2,7 +2,7 @@
 
 ## <a href="https://www.youtube.com/playlist?list=PLbTTxxr-hMmyFAvyn7DeOgNRN8BQdjFm8">Видеокурс на YouTube</a>
 
-## В курсе разобранны следующие концепции:
+## В курсе разобраны следующие концепции:
 - Разработка Веб-Приложений на Go, следуя дизайну REST API.
 - Работа с фреймворком <a href="https://github.com/gin-gonic/gin">gin-gonic/gin</a>.
 - Подход Чистой Архитектуры в построении структуры приложения. Техника внедрения зависимости.
